@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Prototype.Interfaces;
 using Prototype.Models;
+using Prototype.Models.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -21,10 +22,20 @@ namespace Prototype.Repositories {
             }
         }
 
-        public async Task<List<Event>> GetEventFromCompanyCodeAndDate(string CompanyCode, DateTime StartDate) {
+        public async Task<EventDetailDTO> GetEventDetailFromEventID(int EventID) {
             using (IDbConnection conn = Connection) {
                 conn.Open();
-                var result = await conn.QueryAsync<Event>("GetEventFromCompanyCodeAndStartDate",
+                var result = await conn.QueryAsync<EventDetailDTO>("GetEventDetailFromEventID",
+                    new { EventID },
+                    commandType: CommandType.StoredProcedure);
+                return result.First();
+            }
+        }
+
+        public async Task<List<Event>> GetEventsFromCompanyCodeAndDate(string CompanyCode, DateTime StartDate) {
+            using (IDbConnection conn = Connection) {
+                conn.Open();
+                var result = await conn.QueryAsync<Event>("GetEventsFromCompanyCodeAndStartDate",
                     new { CompanyCode, Date = StartDate },
                     commandType: CommandType.StoredProcedure);
                 return result.ToList();
