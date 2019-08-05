@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Prototype.Interfaces;
+using Prototype.Models;
 
 namespace Prototype.Controllers {
     [Route("api/[controller]")]
@@ -13,7 +14,7 @@ namespace Prototype.Controllers {
 
         [HttpPost]
         public IActionResult Authenticate() {
-            return Ok(_jwt.GenerateToken(new Claim[] {
+            return Ok(_jwt.GenerateAccessToken(new Claim[] {
                 new Claim(ClaimTypes.Name, "SimpleAuth"),
             }));
         }

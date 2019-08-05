@@ -10,21 +10,19 @@ using System.Text;
 namespace Prototype.Services {
     public class JwtService : IJwtAuthenticate {
         private readonly JwtToken jwtToken;
+        public string refresh;
 
         public JwtService(IOptions<JwtToken> token) {
             jwtToken = token.Value;
         }
 
-        public string GenerateToken(IEnumerable<Claim> claims) {
+        public string GenerateAccessToken(IEnumerable<Claim> claims) {
             // authentication successful so generate jwt token
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtToken.Secret));
             var tokenDescriptor = new SecurityTokenDescriptor {
-                Subject = new ClaimsIdentity(new Claim[] {
-                    new Claim(ClaimTypes.Name, "SimpleAuth"),
-                }),
+                Subject = new ClaimsIdentity(claims),
                 Issuer = jwtToken.Issuer,
-                Expires = DateTime.UtcNow.AddMinutes(jwtToken.AccessExpiration),
                 SigningCredentials = new SigningCredentials(key,
                 SecurityAlgorithms.HmacSha256Signature)
             };

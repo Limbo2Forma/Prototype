@@ -39,7 +39,7 @@ namespace Prototype {
                     IssuerSigningKey = key,
                     ValidateIssuer = false,
                     ValidateAudience = false
-                };
+                };               
             });
 
             services.AddScoped<IJwtAuthenticate, JwtService>();
