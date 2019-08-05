@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Prototype.Interfaces;
 using Prototype.Models;
@@ -11,6 +10,7 @@ using Prototype.Models.DTOs;
 namespace Prototype.Controllers {
     [Route("api/events")]
     [ApiController]
+    [Authorize]
     public class EventsController : ControllerBase {
         public readonly IEventsReopsitory _eventRepo;
         public EventsController(IEventsReopsitory repo) {

@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Prototype.Interfaces;
 using Prototype.Repositories;
+using Prototype.Services;
 
 namespace Prototype {
     public class Startup {
@@ -24,6 +21,28 @@ namespace Prototype {
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            var appSettingsSection = Configuration.GetSection("JwtToken");
+            services.Configure<JwtToken>(appSettingsSection);
+
+            // configure jwt authentication
+            var jwtToken = appSettingsSection.Get<JwtToken>();
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtToken.Secret));
+            services.AddAuthentication(x => {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x => {
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = key,
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+
+            services.AddScoped<IJwtAuthenticate, JwtService>();
             services.AddTransient<IEventsReopsitory, EventsRepository>();
         }
 
@@ -38,7 +57,8 @@ namespace Prototype {
             }
 
             app.UseHttpsRedirection();
-            app.UseMvc();
+            app.UseAuthentication();
+            app.UseMvc();            
         }
     }
 }
