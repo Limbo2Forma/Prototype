@@ -8,6 +8,13 @@ using System.Security.Claims;
 using System.Text;
 
 namespace Prototype.Services {
+
+    public class JwtToken {
+        public string Secret { get; set; }
+        public string Issuer { get; set; }
+        public int AccessExpiration { get; set; }
+    }
+
     public class JwtService : IJwtAuthenticate {
         private readonly JwtToken jwtToken;
         public string refresh;
@@ -30,11 +37,5 @@ namespace Prototype.Services {
 
             return tokenHandler.WriteToken(stoken);
         }
-    }
-
-    public class JwtToken {
-        public string Secret { get; set; }
-        public string Issuer { get; set; }
-        public int AccessExpiration { get; set; }
     }
 }

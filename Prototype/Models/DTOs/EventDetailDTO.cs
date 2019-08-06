@@ -5,22 +5,22 @@ using System.Threading.Tasks;
 
 namespace Prototype.Models.DTOs {
     public class EventDetailDTO {
-        public int ID { get; set; }
-        public string CompanyCode { get; set; }
-        public int EventTypeID { get; set; }
-        public byte DateType { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
-        public bool IsAllDayEvent { get; set; }
-        public byte? Status { get; set; }
-        public bool IsDeleted { get; set; }
-        public int? OLD_ID { get; set; }
-        public DateTime? LastUpdated { get; set; }
-        public int LanguageID { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Location { get; set; }
-        public string LinkUrl { get; set; }
-        public string LinkDescription { get; set; }
+        public int ID { get; }
+        public string CompanyCode { get; }
+        public int EventTypeID { get; }
+        public byte DateType { get; }
+        public DateTime StartDate { get; }
+        public DateTime? EndDate { get; }
+        public bool IsAllDayEvent { get; }
+        public byte? Status { get; }
+        public bool IsDeleted { get; }
+        public int? OLD_ID { get; }
+        public DateTime? LastUpdated { get; }
+        public int LanguageID { get; }
+        public string Title { get; }
+        public string Description { get; }
+        public string Location { get; }
+        public string LinkUrl { get; }
+        public string LinkDescription { get; }
     }
 }

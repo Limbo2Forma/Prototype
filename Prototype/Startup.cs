@@ -11,7 +11,8 @@ using Prototype.Repositories;
 using Prototype.Services;
 
 namespace Prototype {
-    public class Startup {
+    public class Startup {       
+
         public Startup(IConfiguration configuration) {
             Configuration = configuration;
         }
@@ -26,23 +27,34 @@ namespace Prototype {
             services.Configure<JwtToken>(appSettingsSection);
 
             // configure jwt authentication
-            var jwtToken = appSettingsSection.Get<JwtToken>();
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtToken.Secret));
-            services.AddAuthentication(x => {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x => {
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = key,
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };               
-            });
+            //var jwtToken = appSettingsSection.Get<JwtToken>();
+            //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtToken.Secret));
+            //
+            //services.AddAuthentication(x => {
+            //    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //})
+            //.AddJwtBearer(x => {
+            //    x.SaveToken = true;
+            //    x.TokenValidationParameters = new TokenValidationParameters {
+            //        ValidateIssuerSigningKey = true,
+            //        IssuerSigningKey = key,
+            //        ValidateIssuer = false,
+            //        ValidateAudience = false
+            //    };               
+            //});
+            //
+            //services.AddScoped<IJwtAuthenticate, JwtService>();
 
-            services.AddScoped<IJwtAuthenticate, JwtService>();
+            //configure api key authentication
+            void options(ApiKeyOptions o) {}
+            services.AddAuthentication(x => {
+                x.DefaultAuthenticateScheme = ApiKeyOptions.DefaultScheme;
+                x.DefaultChallengeScheme = ApiKeyOptions.DefaultScheme;
+            }).AddScheme<ApiKeyOptions,ApiKeyHandler>(ApiKeyOptions.DefaultScheme,options);
+
+            services.AddSingleton<IGetAllApiKeysQuery, InMemoryGetAllApiKeysQuery>();
+
             services.AddTransient<IEventsReopsitory, EventsRepository>();
         }
 
